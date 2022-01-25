@@ -21,11 +21,11 @@ export default function Home() {
               <PostCard post={post} key={index} />
             ))}
           </div>
-        </div>
-        <div className="col-span-1 lg:col-span-4">
-          <div className="relative top-8 lg:sticky">
-            <PostWidget />
-            <Categories />
+          <div className="col-span-1 lg:col-span-4">
+            <div className="relative top-8 lg:sticky">
+              <PostWidget />
+              <Categories />
+            </div>
           </div>
         </div>
       </div>
