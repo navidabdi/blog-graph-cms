@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Link from 'next/link'
-
-const categories = [
-  { name: 'React', slug: 'react' },
-  { name: 'Web Development', slug: 'webdev' },
-]
+import { getCategories } from '../services'
 
 const Header = () => {
+  const [categories, setCategories] = useState([])
+  useEffect(() => {
+    getCategories().then((newCategories) => setCategories(newCategories))
+  }, [])
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     setIsLoading(true)
