@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-
+import { submitComment } from '../services'
 const CommentsForm = ({ slug }) => {
   const [error, setError] = useState(false)
   const [localStorage, setLocalStorage] = useState(null)
@@ -10,11 +10,51 @@ const CommentsForm = ({ slug }) => {
   const emailEl = useRef()
   const storeDataEl = useRef()
 
-  const CommentSubmissionHandler = () => {}
+  useEffect(() => {
+    nameEl.current.value = window.localStorage.getItem('name')
+    emailEl.current.value = window.localStorage.getItem('email')
+  }, [])
+
+  const CommentSubmissionHandler = () => {
+    setError(false)
+
+    const { value: comment } = commentEl.current
+    const { value: name } = nameEl.current
+    const { value: email } = emailEl.current
+    const { checked: storeData } = storeDataEl.current
+
+    if (!comment || !name || !email) {
+      setError(true)
+      return
+    }
+
+    const commentObj = {
+      name,
+      email,
+      comment,
+      slug,
+    }
+    if (storeData) {
+      window.localStorage.setItem('name', name)
+      window.localStorage.setItem('email', email)
+    } else {
+      window.localStorage.removeItem('name', name)
+      window.localStorage.removeItem('email', email)
+    }
+
+    submitComment(commentObj).then((res) => {
+      setShowSuccessMessage(true)
+      setTimeout(() => {
+        setShowSuccessMessage(false)
+      }, 5000)
+    })
+  }
 
   return (
     <div className="mb-8 rounded-lg bg-white p-8 pb-12 shadow-lg">
-      <h3 className="mb-8 border-b pb-4 text-xl font-semibold">CommentsForm</h3>
+      <h3 className="mb-8 border-b pb-4 text-xl font-semibold">
+        Leave a Reply
+      </h3>
       <div className="mb-4 grid grid-cols-1 gap-4">
         <textarea
           ref={commentEl}
@@ -41,6 +81,23 @@ const CommentsForm = ({ slug }) => {
         />
       </div>
       <div className="mb-4 grid grid-cols-1 gap-4">
+        <div>
+          <input
+            type="checkbox"
+            ref={storeDataEl}
+            id="storeData"
+            name="storeData"
+            value="true"
+          />
+          <label
+            htmlFor="storeData"
+            className="ml-2 cursor-pointer text-gray-500"
+          >
+            Save My E-mail And Name For The Next Time I Comment.
+          </label>
+        </div>
+      </div>
+      <div className="mb-4 grid grid-cols-1 gap-4">
         {error && (
           <p className="text-xs text-red-500">All Fields Are Required</p>
         )}
@@ -51,9 +108,13 @@ const CommentsForm = ({ slug }) => {
           type="button"
           onClick={CommentSubmissionHandler}
         >
-          {' '}
           Sumbit
         </button>
+        {showSuccessMessage && (
+          <span className="float-right mt-3 text-xl font-semibold text-green-500">
+            Comment Submitted For Review
+          </span>
+        )}
       </div>
     </div>
   )
