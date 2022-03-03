@@ -10,7 +10,7 @@ export default function Home({ posts }) {
         <title>Blog CMS</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container mx-auto mb-8 px-10">
+      <div className="container mx-auto mb-8 overflow-x-hidden px-10">
         <h1>Home</h1>
       </div>
     </>
